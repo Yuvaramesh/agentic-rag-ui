@@ -35,6 +35,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Progress } from "@/components/ui/progress";
 import axios from "axios";
 import { useToast } from "@/hook/use-toast";
+import { useSession } from "next-auth/react";
 
 // Types
 interface ChatMsgType {
@@ -83,6 +84,7 @@ const useAutoResizeTextarea = ({
 
 export default function AI_Prompt({ chat, setChat }: Props) {
   const [uploadProgress, setUploadProgress] = useState<UploadProgress[]>([]);
+  const { data } = useSession();
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [selectedFile, setSelectedFile] = useState<string>("Select File");
@@ -128,6 +130,7 @@ export default function AI_Prompt({ chat, setChat }: Props) {
         query,
         selectedFile: selectedFile === "all_files" ? null : selectedFile,
         chat_history: history,
+        user_email: data?.user?.email || "",
       });
 
       const responseData = res.data;
