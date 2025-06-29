@@ -140,6 +140,7 @@ export default function AI_Prompt({ chat, setChat }: Props) {
           message: responseData.answer,
           sender: "agent",
           streaming: false,
+          agent_type: responseData.agent_type,
         },
       ]);
 
