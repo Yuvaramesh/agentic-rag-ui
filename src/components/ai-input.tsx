@@ -281,7 +281,7 @@ export default function AI_Prompt({ chat, setChat }: Props) {
   };
 
   return (
-    <div className="w-[78%] bg-black   z-50 pb-4">
+    <div className="w-[78%] bg-white dark:bg-black z-50 pb-4">
       {/* Upload Progress Display */}
       <AnimatePresence>
         {uploadProgress.length > 0 && (
@@ -297,7 +297,11 @@ export default function AI_Prompt({ chat, setChat }: Props) {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700 shadow-sm"
+                className={cn(
+                  "rounded-lg p-3 border shadow-sm",
+                  "bg-white dark:bg-gray-800",
+                  "border-gray-200 dark:border-gray-700"
+                )}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
@@ -345,17 +349,20 @@ export default function AI_Prompt({ chat, setChat }: Props) {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <div className="bg-[#7777]  rounded-2xl p-1.5">
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl p-1.5">
         <div className="relative">
           <div className="relative flex flex-col">
             <div className="overflow-y-auto" style={{ maxHeight: "400px" }}>
               <Textarea
                 id="ai-input-15"
                 value={query}
-                placeholder={"What can I do for you?"}
+                placeholder="What can I do for you?"
                 className={cn(
-                  "w-full rounded-xl z-50 rounded-b-none px-4 py-3 bg-[#7777]  border-none dark:text-white placeholder:text-black/70 dark:placeholder:text-white/70 resize-none focus-visible:ring-0 focus-visible:ring-offset-0",
+                  "w-full rounded-xl z-50 rounded-b-none px-4 py-3",
+                  "bg-white text-black placeholder:text-black/70",
+                  "dark:bg-zinc-900 dark:text-white dark:placeholder:text-white/70",
+                  "border border-gray-300 dark:border-zinc-700",
+                  "resize-none focus-visible:ring-0 focus-visible:ring-offset-0",
                   "min-h-[72px]"
                 )}
                 ref={textareaRef}
@@ -368,14 +375,17 @@ export default function AI_Prompt({ chat, setChat }: Props) {
               />
             </div>
 
-            <div className="h-14 bg-[#7777]  rounded-b-xl flex items-center">
+            {/* Footer Bar */}
+            <div className="h-14 bg-gray-100 dark:bg-zinc-800 rounded-b-xl flex items-center">
               <div className="absolute left-3 right-3 bottom-3 flex items-center justify-between w-[calc(100%-24px)]">
+                {/* LEFT BUTTONS */}
                 <div className="flex items-center gap-2">
+                  {/* File Dropdown */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="flex items-center gap-1 h-8 pl-1 pr-2 text-xs rounded-md dark:text-white hover:bg-black/10 dark:hover:bg-white/10 focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:ring-blue-500"
+                        className="flex items-center gap-1 h-8 pl-1 pr-2 text-xs rounded-md text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/10 focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:ring-blue-500"
                       >
                         <AnimatePresence mode="wait">
                           <motion.div
@@ -392,13 +402,7 @@ export default function AI_Prompt({ chat, setChat }: Props) {
                         </AnimatePresence>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className={cn(
-                        "min-w-[10rem]",
-                        "border-black/10 dark:border-white/10",
-                        "bg-gradient-to-b from-white via-white to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-800"
-                      )}
-                    >
+                    <DropdownMenuContent className="min-w-[10rem] bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700">
                       {uploadedFiles.map((model) => (
                         <DropdownMenuItem
                           key={model}
@@ -410,15 +414,17 @@ export default function AI_Prompt({ chat, setChat }: Props) {
                             <span>{model}</span>
                           </div>
                           {selectedFile === model && (
-                            <Check className="w-4 h-4 text-blue-500" />
+                            <Check className="w-4 h-4 text-blue-500 dark:text-white" />
                           )}
                         </DropdownMenuItem>
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
 
+                  {/* Divider */}
                   <div className="h-4 w-px bg-black/10 dark:bg-white/10 mx-0.5" />
 
+                  {/* Attachment Button */}
                   <label
                     className={cn(
                       "rounded-lg p-2 bg-black/5 dark:bg-white/5 cursor-pointer",
@@ -440,6 +446,7 @@ export default function AI_Prompt({ chat, setChat }: Props) {
                   </label>
                 </div>
 
+                {/* Send Button */}
                 <button
                   type="button"
                   className={cn(
@@ -453,7 +460,7 @@ export default function AI_Prompt({ chat, setChat }: Props) {
                 >
                   <ArrowRight
                     className={cn(
-                      "w-4 h-4 dark:text-white transition-opacity duration-200",
+                      "w-4 h-4 text-black dark:text-white transition-opacity duration-200",
                       query.trim() && !isLoading ? "opacity-100" : "opacity-30",
                       isLoading && "animate-pulse"
                     )}
