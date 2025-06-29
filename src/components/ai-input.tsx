@@ -402,7 +402,7 @@ export default function AI_Prompt({ chat, setChat }: Props) {
                         </AnimatePresence>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="min-w-[10rem] bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700">
+                    <DropdownMenuContent className="min-w-[10rem] max-h-64 overflow-y-auto bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700">
                       {uploadedFiles.map((model) => (
                         <DropdownMenuItem
                           key={model}
