@@ -33,7 +33,7 @@ const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  secret: "your-secret-key-here-replace-with-random-string",
+  secret: "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",
 };
 
 const handler = NextAuth(authOptions);

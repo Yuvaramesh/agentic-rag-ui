@@ -13,6 +13,7 @@ import {
 } from "../../components/ui/card";
 import { Chrome, Loader2 } from "lucide-react";
 import BackgroundPaths from "../../components/ui/backgroundpaths"; // ✅ Fixed import
+import { FaGoogle } from "react-icons/fa";
 
 export default function LoginPage() {
   const { data: session, status } = useSession();
@@ -50,11 +51,11 @@ export default function LoginPage() {
       {/* ✅ Background animated waves */}
       <BackgroundPaths title="Welcome to Agentic RAG">
         {/* ✅ Login Card on top of background */}
-        <Card className="relative z-10 w-130 h-90 max-w-md  shadow-xl border-0 bg-gradient-to-br from-fuchsia-100 via-pink-200 to-indigo-200 backdrop-blur-sm p-4">
+        <Card className="relative z-10 w-130 h-70 max-w-md  shadow-xl border-0 bg-gradient-to-br from-fuchsia-100 via-pink-200 to-indigo-200 backdrop-blur-sm p-4">
           <CardHeader className="space-y-4 text-center pb-8">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center">
-              <Chrome className="w-8 h-8 text-white" />
-            </div>
+            {/* <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center">
+              <FaGoogle className="w-8 h-8 text-white" />
+            </div> */}
             <div className="space-y-2">
               <CardTitle className="text-2xl font-bold text-slate-900">
                 Welcome to Agentic RAG
@@ -76,7 +77,7 @@ export default function LoginPage() {
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin mr-3" />
               ) : (
-                <Chrome className="w-5 h-5 mr-3 text-blue-600" />
+                <FaGoogle className="w-5 h-5 mr-3 text-[#4285F4]" />
               )}
               {isLoading ? "Signing in..." : "Continue with Google"}
             </Button>
