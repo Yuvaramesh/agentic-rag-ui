@@ -207,12 +207,13 @@ export default function AI_Prompt({ chat, setChat }: Props) {
       title: "Upload Started",
       description: `Uploading ${fileArray.length} file(s)...`,
     });
-
     const formData = new FormData();
     fileArray.forEach((file) => {
       formData.append("files", file);
     });
-
+    await axios.post("http://127.0.0.1:5000/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     try {
       // Simulate progress updates (since axios doesn't provide real progress for multipart uploads easily)
       const progressInterval = setInterval(() => {
