@@ -21,7 +21,7 @@ import {
   Upload,
   X,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -87,15 +87,16 @@ export default function AI_Prompt({ chat, setChat }: Props) {
   const { data } = useSession();
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<string>("Select File");
   const [history, setHistory] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-
   const { textareaRef, adjustHeight } = useAutoResizeTextarea({
     minHeight: 72,
     maxHeight: 300,
   });
+  const suggestionBoxRef = useRef<HTMLDivElement>(null);
 
   const getUploadedFiles = async () => {
     try {
@@ -114,15 +115,10 @@ export default function AI_Prompt({ chat, setChat }: Props) {
 
   const handleQuery = async () => {
     if (!query.trim()) return;
-
     setChat((prev) => [
       ...prev,
       { message: query, sender: "user" },
-      {
-        message: "Processing your query...",
-        sender: "agent",
-        streaming: true,
-      },
+      { message: "Processing your query...", sender: "agent", streaming: true },
     ]);
     setIsLoading(true);
     try {
@@ -132,19 +128,26 @@ export default function AI_Prompt({ chat, setChat }: Props) {
         chat_history: history,
         user_email: data?.user?.email || "",
       });
-
       const responseData = res.data;
+      const translationRes = await axios.post(
+        "http://127.0.0.1:5000/translate",
+        {
+          text: responseData.answer,
+          target_lang: "ta",
+        }
+      );
+      const tamilTranslation = translationRes.data.translated_text;
       setChat((prev) => [
-        ...prev.slice(0, -1), // Remove the last "Processing your query..." message
+        ...prev.slice(0, -1),
         {
           message: responseData.answer,
           sender: "agent",
           streaming: false,
-          agent_type: responseData.agent_type,
+          translated: "",
         },
       ]);
-
-      setQuery(""); // Clear the query input
+      setQuery("");
+      setSuggestions([]);
     } catch (error) {
       alert("Error processing query");
       console.error("Query error:", error);
@@ -170,7 +173,23 @@ export default function AI_Prompt({ chat, setChat }: Props) {
       adjustHeight(true);
     }
   };
+  const fetchSuggestions = async (lastWord: string) => {
+    if (!selectedFile || selectedFile === "Select File" || !lastWord) return;
+    try {
+      const res = await axios.post("http://127.0.0.1:5000/suggest_words", {
+        prefix: lastWord,
+        selected_file: selectedFile, // ✅ Use the correct key
+      });
+      setSuggestions(res.data.suggestions || []);
+    } catch (err) {
+      console.error("Suggestion fetch failed", err);
+    }
+  };
 
+  useEffect(() => {
+    const lastWord = query.trim().split(" ").pop();
+    fetchSuggestions(lastWord || "");
+  }, [query]);
   const handleUpload = async (files: FileList | null) => {
     if (!files) return;
 
@@ -283,6 +302,28 @@ export default function AI_Prompt({ chat, setChat }: Props) {
 
   return (
     <div className="w-[78%] bg-white dark:bg-black z-50 pb-4">
+      {suggestions.length > 0 && (
+        <div
+          ref={suggestionBoxRef}
+          className="absolute bottom-44 left-17 w-44 z-50 bg-white dark:bg-transparent shadow-lg border border-gray-200 dark:border-gray-700 rounded-md p-2"
+        >
+          {suggestions.map((word, index) => (
+            <div
+              key={index}
+              className="text-sm text-gray-700 dark:text-gray-200 p-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+              onClick={() => {
+                const words = query.trim().split(" ");
+                words.pop();
+                const newQuery = [...words, word].join(" ") + " ";
+                setQuery(newQuery);
+                setSuggestions([]);
+              }}
+            >
+              {word}
+            </div>
+          ))}
+        </div>
+      )}
       {/* Upload Progress Display */}
       <AnimatePresence>
         {uploadProgress.length > 0 && (
